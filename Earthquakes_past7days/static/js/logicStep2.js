@@ -9,7 +9,7 @@ let myStyle = {
   fillColor: "yellow",
 	weight: 1
 }
-
+/*
 // Grabbing our GeoJSON data.
 d3.json(earthQuake).then(function(data) {
     console.log(data);
@@ -53,4 +53,4 @@ function styleInfo(feature) {
 
 // Then we add our 'graymap' tile layer to the map.
 streets.addTo(map);
-
+*/
