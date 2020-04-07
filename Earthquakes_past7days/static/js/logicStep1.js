@@ -29,31 +29,6 @@ let map = L.map('mapid', {
 // Pass our map layers into our layers control and add the layers control to the map.
 L.control.layers(baseMaps).addTo(map);
 
-// Accessing the Toronto neighborhoods GeoJSON URL.
-let earthQuake = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson";
-
-// Create a style for the lines.
-let myStyle = {
-  color: "blue",
-  fillColor: "yellow",
-	weight: 1
-}
-
-// Grabbing our GeoJSON data.
-d3.json(earthQuake).then(function(data) {
-    console.log(data);
-  // Creating a GeoJSON layer with the retrieved data.
-  L.geoJson(data, {
-    style: myStyle,
-
-    onEachFeature: function(feature, layer){
-      //console.log(layer);
-      layer.bindPopup("<h3> Magnitude: " + feature.properties.mag + " at: " 
-                        + feature.properties.place + "</h3>" 
-      );
-    }
-	}).addTo(map);	
-});
 
 // Then we add our 'graymap' tile layer to the map.
 streets.addTo(map);
