@@ -35,21 +35,32 @@ let outdoors = L.tileLayer(tileString('outdoors-v10'), {
 	accessToken: API_KEY
 });
 
+
+// We create the dark view tile layer that will be an option for our map.
+let light = L.tileLayer(tileString('light-v10'),  {
+  attribution: attributionLink,
+	maxZoom: 18,
+	accessToken: API_KEY
+});
+
 // Create a base layer that holds both maps.
 let baseMaps = {
   Street: streets,
   Night: night,
   Satellite: satelliteStreets,
-  Outdoors: outdoors
+  Outdoors: outdoors,
+  Light: light
   };
 
   // Create the earthquake layer for our map.
 let earthquakes = new L.layerGroup();
+let tectonicPlate = new L.layerGroup();
 
 // We define an object that contains the overlays.
 // This overlay will be visible all the time.
 let overlays = {
-    Earthquakes: earthquakes
+    Earthquakes: earthquakes,
+    TectonicPlates: tectonicPlate
   };
 
   // Create the map object with center, zoom level and default layer.
@@ -63,17 +74,26 @@ let map = L.map('mapid', {
 // which layers are visible.
 L.control.layers(baseMaps, overlays).addTo(map);
 
+// Get the plates
+let plates = "https://raw.githubusercontent.com/fraxen/tectonicplates/master/GeoJSON/PB2002_boundaries.json"
 
-// Accessing the earthquake GeoJSON URL.
+// Read the plates GeoJSON data.
+d3.json(plates).then(function(data) {
+
+  function myStyle() {
+    return {
+    color: "red",
+    weight: 1
+    };
+  }
+
+  L.geoJson(data, {
+    style: myStyle
+  }).addTo(tectonicPlate);
+});
+
+// Get the earthquake GeoJSON URL.
 let earthQuake = "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson";
-
-// Create a style for the lines.
-let myStyle = {
-  color: "blue",
-  fillColor: "yellow",
-	weight: 1
-}
-
 
 // Grabbing our GeoJSON data.
 d3.json(earthQuake).then(function(data) {
@@ -170,7 +190,8 @@ legend.onAdd = function() {
 //Add the legend to the map
 legend.addTo(map);
 
-
+// add the tectonicPlate overlay
+tectonicPlate.addTo(map)
 
 // Then we add our 'graymap' tile layer to the map.
 earthquakes.addTo(map);
